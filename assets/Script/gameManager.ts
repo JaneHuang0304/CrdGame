@@ -15,7 +15,8 @@ const { ccclass, property } = _decorator;
  *
  */
  
- enum GameStat{
+//設置遊戲狀態
+enum GameStat{
     GS_INI,
     GS_ING,
     GS_END,
@@ -54,17 +55,22 @@ export class gameManager extends Component {
     public crdRow: number;
     public cardEmptyMap = [];
     public preCrd: Array<frontCtr> = [];
+    //總共可配對的組數
     public machCrd: number;
     private PosX: number;
     private PosY = 204; 
+    //卡牌位置
     private CrdPos: Vec3;
     private rand: number; 
+    //配對數
     public pairCnt = 3;
 
     start () {
+        //設置遊戲初始狀態
         this.getStat = GameStat.GS_INI;
     }
 
+    //卡片帳數陣咧
     setCrdMap(){
         let cnt = this.crdRow * 3;
         for (let i = 0; i < cnt; i++) {
@@ -97,6 +103,7 @@ export class gameManager extends Component {
         }    
     }
 
+    //設置遊戲狀態動作
     set getStat(value: GameStat){
         switch(value){
             case GameStat.GS_INI:
@@ -135,7 +142,7 @@ export class gameManager extends Component {
                 break;
         }
     }
-
+    //檢查配對
     checkPair () {
         let result = false;
         if (this.pairCnt >= 2){
@@ -144,7 +151,7 @@ export class gameManager extends Component {
         } 
         return result;
     }
-
+    //中等程度設置
     onMediumBtnClick(){
         this.nowTime = 40;
         this.crdRow = 4;  //3*4
@@ -153,7 +160,7 @@ export class gameManager extends Component {
             this.getStat = GameStat.GS_INI;
         }
     }
-
+    //簡單程度設置
     onEasyBtn(){
         this.nowTime = 20;
         this.crdRow = 2;  //3*2
@@ -162,7 +169,7 @@ export class gameManager extends Component {
             this.getStat = GameStat.GS_INI;
         }
     }
-
+    //困難程度設置
     onHardBtnClick(){
         this.nowTime = 60;
         this.crdRow = 6; //3*6
@@ -171,7 +178,7 @@ export class gameManager extends Component {
             this.getStat = GameStat.GS_INI;
         }
     }
-
+    //卡牌重置
     setReSet(){
         this.cardEmptyMap = [];
         this.preCrd = [];
@@ -181,15 +188,17 @@ export class gameManager extends Component {
         this.setFront();
         this.setTimer();
     }
-
+    //設置隨機位置
     setRandPos() {
         this.rand = 0;
         let rowGapCnt = (19 - (this.crdRow * 2)) / (this.crdRow + 1);
         let rowGap = 100 + (rowGapCnt * 50);
         this.PosX = -500 + rowGap;
+        //產生亂數
         let randIndex = Math.floor(Math.random() * (this.cardEmptyMap.length));
         this.rand = this.cardEmptyMap[randIndex];
         this.cardEmptyMap.splice(randIndex, 1);
+        //設置卡片位置
         let indexY = Math.ceil(this.rand / this.crdRow);
         let indexX = this.rand - ((this.crdRow * (indexY - 1)) + 1) + 1;
         indexY = this.PosY + ((-200) * (indexY - 1));
@@ -197,6 +206,7 @@ export class gameManager extends Component {
         this.CrdPos = new Vec3(indexX, indexY, 0);
     }
 
+    //初始化卡片
     setFront() {
         this.setCrdMap();
         for (let i = 0; i < this.machCrd; i++) {
@@ -215,7 +225,7 @@ export class gameManager extends Component {
             }
         }
     }
-
+    //確認是否有配對到的卡牌
     isMatch(): boolean {
         let result = false;
         if (this.preCrd.length == 0){

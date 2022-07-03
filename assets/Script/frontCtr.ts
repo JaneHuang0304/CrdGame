@@ -36,22 +36,23 @@ export class frontCtr extends Component {
         this.anim = this.node.getComponent(Animation);
     }
 
+    //滑鼠點擊事件
     async onClick(){
+        //動畫執行中不能點擊
         if (this.isRunAnimate)
             return;
-
+        //已經被掀開不能再點
         if (!this.isBack)
             return;
 
         if (this.GameCtr.preCrd.length == this.GameCtr.pairCnt)
             return;
 
+        //掀牌
         await this.showCrd();
-        // await this.runAnim('open', true);
-        // await this.runAnim('close', false);
-        // console.log('haha');
     }
 
+    //執行動畫
     async runAnim(action: string, isWait: boolean) {
         console.log(`action:: ${action}`);
         switch(action) {
@@ -85,6 +86,7 @@ export class frontCtr extends Component {
    
     }
 
+    //設置動畫
     setAnim(action: string) {
         console.log(`${this.index} run setAnim ${action}`)
         switch(action) {
@@ -110,6 +112,7 @@ export class frontCtr extends Component {
         }, 1000)
     }
 
+    //顯示卡片內容
     async showCrd() {
         this.GameCtr.preCrd.push(this.node.getComponent(frontCtr)); 
         this.setAnim('open');
@@ -138,6 +141,7 @@ export class frontCtr extends Component {
         });
     }
 
+    //關牌
     async Close(isClose: boolean){
         return new Promise((resolve, reject) => {
             console.log(`run close promise`);
@@ -159,6 +163,7 @@ export class frontCtr extends Component {
     update (deltaTime: number) {
         if (this.needChangedSpiriteFrame) {
             this.animRunTime += deltaTime;
+            //時間到蓋牌或掀牌
             if (this.animRunTime >= 0.5) {
                 let picUrl;
                 if (!this.isBack) {
@@ -172,7 +177,7 @@ export class frontCtr extends Component {
             }
         }
     }
-
+    //設置卡牌圖片
     setCrdPic(pic: string){
         resources.load(pic, SpriteFrame, (err: any, spriteFrame) => {
             let sprite = this.getComponent(Sprite);
